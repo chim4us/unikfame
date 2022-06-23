@@ -1,0 +1,25 @@
+body {
+  background: rgb(28,20,43);
+  // height: 100vh;  
+}
+.activity-page, .edit-profile, .item-details, .auctions-page, .authors ,.authors-2{  
+  min-height: 100vh;  
+  overflow-y: auto;
+  overflow-x: hidden;
+  .flat-title-page.inner {
+    background: transparent !important;
+  }
+  .auth-nav {
+    background: transparent !important;
+    border-bottom: 1px solid rgba(235, 235, 235, 0.2);
+  }
+  .auth-nav.is-fixed {
+    background: #14141F !important;
+  }
+  .tf-section {
+    background-color: transparent;
+  }
+}
+.is_dark .author-page div.author-profile {
+  background-image: url(../img/item-background/bg-authors2.jpg);
+}

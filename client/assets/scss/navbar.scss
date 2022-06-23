@@ -1,0 +1,84 @@
+#header_main {
+  background: transparent;  
+  &.is-fixed {
+    background: #14141F;
+    box-shadow: 1px 1px 5px 0px rgb(0 0 0 / 50%);
+  }
+  .main-logo {
+    img {
+      width: 71px;
+      height: 71px;
+    }
+  } 
+  .login-btn {
+    padding: 12px 32px;
+    background: linear-gradient(90deg, #E300EB 0%, #5E00CC 100%);      
+    border: 0;
+    display: flex;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: auto;
+  }
+  .main-nav ul li a {
+    font-size: 18px;
+    font-weight: 400;
+    // font-family: Lato;
+  }
+  @media screen and (min-width: 1200px) {
+    .themesflat-container {
+      width: 1440px;
+    }
+    #main-nav {
+      left: unset;
+      right: 350px;
+    }
+  }
+  @media screen and (max-width: 1199px) {
+    #wallet-connect {
+      padding: 0 !important;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+      span {
+        font-size: 0;
+        display: flex;
+        align-items: center;
+        text-align: center;
+        justify-content: center;
+        height: 22px;
+        padding-left: 28px;
+        &::before {
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+        }
+      }
+    }    
+  }
+  @media screen and (max-width: 1199px) and (min-width: 992px) {
+    #main-nav {
+      left: unset;
+      right: 200px;
+    }
+  }
+  @media screen and (max-width: 991px) {
+    .login-btn {
+      position: absolute;
+      right: 60px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    #wallet-connect {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      right: 190px
+    }
+  }
+}
+.home-page #header_main{
+  background: rgba(20,20,31,0.9);
+}

@@ -1,0 +1,21 @@
+.login-page {
+  background-image: url(../img/login-bg.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  .tf-login {
+    background-color: #14141f;
+  }
+  .flat-title-page.inner {
+    background: transparent !important;
+  }
+  .auth-nav {
+    background: transparent !important;
+    border-bottom: 1px solid rgba(235, 235, 235, 0.2);
+  }
+  .auth-nav.is-fixed {
+    background: #14141F !important;
+  }
+  .tf-section {
+    background: transparent;
+  }
+}
