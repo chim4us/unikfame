@@ -9,6 +9,28 @@ import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155URIStorage.sol";
 
 pragma solidity ^0.8.4;
 
+interface Tkn{
+    function totalSupply() external view returns (uint256);
+
+    function balanceOf(address account) external view returns (uint256);
+
+    function transfer(address recipient, uint256 amount) external returns (bool);
+
+    function allowance(address owner, address spender) external view returns (uint256);
+
+    function approve(address spender, uint256 amount) external returns (bool);
+    
+    function transferFrom(
+        address sender,
+        address recipient,
+        uint256 amount
+    ) external returns (bool);
+
+    event Transfer(address indexed from, address indexed to, uint256 value);
+
+    event Approval(address indexed owner, address indexed spender, uint256 value);
+}
+
 interface ERC1155TokenReceiver {
     
     function onERC1155Received(address _operator, address _from, uint256 _id, uint256 _value, bytes calldata _data) external returns(bytes4);
@@ -23,6 +45,7 @@ contract NFTMarketplaceErc115 is ERC1155URIStorage {
     Counters.Counter private _userIds;
     Counters.Counter private _influencerIds;
     address payable owner;
+    address payable usdtAdr;
     uint256 listingPrice = 0.025 ether;
     uint256 numberOfFreeMembership = 500;
     uint[] public uniknums = [1000,500,100,10,1];
@@ -69,7 +92,8 @@ contract NFTMarketplaceErc115 is ERC1155URIStorage {
     mapping(uint256 => NFTItemMarketPlc) private idToNFTMrkItem;
     mapping(uint256 => Offer) private idToOffers;
     mapping (uint256 => uint256) tokenIdToOfferId;
-    mapping(address => NFTItemAuction) private idToNFTActItem;
+    mapping(uint256 => NFTItemAuction) private idToNFTActItem;
+    mapping(address => NFTItemAuction) private addrToNFTActItem;
     mapping (string => bool) public influencer_exist;
     mapping (uint256 => string) public influencer_str;
     mapping (string => bool) public influencer_featured;
@@ -103,8 +127,9 @@ contract NFTMarketplaceErc115 is ERC1155URIStorage {
     );
 
 
-    constructor() ERC1155("test.com") {
+    constructor(address _usdtAdr) ERC1155("test.com") {
       owner = payable(msg.sender);
+      usdtAdr = payable(_usdtAdr);
     }
 
     function onERC1155Received(
@@ -223,7 +248,7 @@ contract NFTMarketplaceErc115 is ERC1155URIStorage {
             _price,
             _tokenURI,
             _Tier,
-            false
+            true
         );
 
         _safeTransferFrom(msg.sender,address(this),_tokenId,_quantity,"");
@@ -243,8 +268,9 @@ contract NFTMarketplaceErc115 is ERC1155URIStorage {
         uint256 _tokenId,uint256 _ActEndTm,uint256 _quantity,
         address _royalty,string memory _tokenURI,uint256 _Tier,uint256 _bidStPrc
     )private {
+        require(_bidStPrc > 0, "Bid start price must be greater than zero");
 
-        idToNFTActItem[msg.sender] =  NFTItemAuction(
+        addrToNFTActItem[msg.sender] =  NFTItemAuction(
             _tokenId,
             block.timestamp,
             block.timestamp + _ActEndTm,
@@ -254,7 +280,20 @@ contract NFTMarketplaceErc115 is ERC1155URIStorage {
             payable(_royalty),
             _tokenURI,
             _Tier,
-            false
+            true
+        );
+
+        idToNFTActItem[_tokenId] =  NFTItemAuction(
+            _tokenId,
+            block.timestamp,
+            block.timestamp + _ActEndTm,
+            _quantity,
+            _bidStPrc,
+            payable(msg.sender),
+            payable(_royalty),
+            _tokenURI,
+            _Tier,
+            true
         );
 
         _safeTransferFrom(msg.sender,address(this),_tokenId,_quantity,"");
@@ -272,12 +311,14 @@ contract NFTMarketplaceErc115 is ERC1155URIStorage {
     }
 
     function setOffer(address _nftOwner, uint256 _price, uint256 _tokenId,uint256 _quantity) public{
-        require(idToNFTActItem[_nftOwner].status == false && idToNFTActItem[_nftOwner].quantity > 0,"NFT not on Auction");
+        Tkn Token = Tkn(usdtAdr);
+        require(addrToNFTActItem[_nftOwner].status == false && addrToNFTActItem[_nftOwner].quantity > 0,"NFT not on Auction");
         //require(idToOffers[_tokenId].price == 0, "You can't sell twice the same offers ");
         //require(_tokenId == 3 || _tokenId == 4, "Offer can only be done on Platinum and Diamond NFT's");
-        require(idToNFTActItem[_nftOwner].quantity >= _quantity, "Not Enough NFT on auction");
-        require(block.timestamp <= idToNFTActItem[_nftOwner].ActEndTm,"Action ended");
-        require(_price >= idToNFTActItem[_nftOwner].bidStPrc,"Bid amount can only be greater than the starting auction price");
+        require(Token.allowance(msg.sender,address(this)) > _price,"Please approve USDT above the price amount");
+        require(addrToNFTActItem[_nftOwner].quantity >= _quantity, "Not Enough NFT on auction");
+        require(block.timestamp <= addrToNFTActItem[_nftOwner].ActEndTm,"Action ended");
+        require(_price >= addrToNFTActItem[_nftOwner].bidStPrc,"Bid amount can only be greater than the starting auction price");
 
         Offer memory _offer = Offer({
             price: _price,
@@ -297,7 +338,7 @@ contract NFTMarketplaceErc115 is ERC1155URIStorage {
         emit AuctionTrx( msg.sender, _tokenId,_quantity);
     }
 
-    function getOffer(uint256 _tokenId)public view returns(address[] memory bider,uint256[] memory price,uint256[] memory quantity) {
+    function getActionOffers(uint256 _tokenId)public view returns(address[] memory bider,uint256[] memory price,uint256[] memory quantity) {
         //Offer storage offer = idToOffers[_tokenId];
         uint256 totalOffers = offers[_tokenId].length;
         address[] memory adr = new address[](1);
@@ -321,37 +362,61 @@ contract NFTMarketplaceErc115 is ERC1155URIStorage {
         }
     }
 
-    function endAuctionBatch(uint256 tokenId) public payable {
+    function endAuction(uint256 _tokenId) public payable {
+        require(idToNFTActItem[_tokenId].owner == msg.sender,"You cannot end this auction NFT");
+        require(idToNFTActItem[_tokenId].status,"You cannot end this auction NFT");
+        require(block.timestamp >= idToNFTActItem[_tokenId].ActEndTm ,"Auction not ended yet");
 
+        (address[] memory _bider,uint256[] memory _price,uint256[] memory _quantity) = getActionOffers(_tokenId);
+        Tkn Token = Tkn(usdtAdr);
+
+        if((_bider.length == 0) && (_bider[0] == address(0))){
+            _safeTransferFrom(address(this),msg.sender,_tokenId,idToNFTActItem[_tokenId].quantity,"");
+        }else{
+            uint256 price;
+            uint256 _quan;
+            address bider;
+            for(uint256 offerId = 0; offerId < _bider.length; offerId++){
+                if((_price[offerId] > price)&&(Token.balanceOf(_bider[offerId]) >= _price[offerId])){
+                    bider = _bider[offerId];
+                    _quan = _quantity[offerId];
+                    price = _price[offerId];
+                    
+                }
+            }
+
+            send_funds3(price, idToNFTActItem[_tokenId].royalty, idToNFTActItem[_tokenId].owner,bider);
+            _safeTransferFrom(address(this),msg.sender,_tokenId,_quan,"");
+        }
     }
 
+    function send_funds1(uint256 price, address royalty) internal {
+        payable(Unikfame).transfer(price*60/100);
+        payable(Wesley).transfer(price*25/1000);
+        payable(Gaetan).transfer(price*25/1000);
+        payable(Sam).transfer(price*8/100);
+        payable(Mike).transfer(price*1/100);
+        payable(Dev).transfer(price*1/100);
+        payable(royalty).transfer(price*25/100);
+    }
+    function send_funds2(uint256 price, address royalty, address seller) internal {
+        payable(seller).transfer(price*80/100);  
+        payable(royalty).transfer(price*10/100);
+        payable(Unikfame).transfer(price*10/100);
+    }    
+    function send_funds3(uint256 price, address royalty, address seller,address _bider) internal {
+        Tkn Token = Tkn(usdtAdr);
+        Token.transferFrom(_bider,seller,(price*80/100));
+        Token.transferFrom(_bider,royalty,(price*5/100));
+        Token.transferFrom(_bider,Unikfame,(price*15/100));
+        
+        // payable(seller).transfer(price*80/100);  
+        // payable(royalty).transfer(price*5/100);
+        // payable(Unikfame).transfer(price*15/100);
+    }
 
+    function fetchMyAuctionNFTs(address user) public view returns (NFTItemAuction[] memory) {
 
-//     function setOffer(uint256 _price, uint256 _tokenId) public{
-//       /*
-//       *   We give the contract the ability to transfer kitties
-//       *   As the kitties will be in the market place we need to be able to transfert them
-//       *   We are checking if the user is owning the kitty inside the approve function
-//       */
-//       require(tokenIdToOffer[_tokenId].price == 0, "You can't sell twice the same offers ");
-//       IERC1155 nft = IERC1155(nftAddr);
-//       require(nft.isApprovedForAll(msg.sender, address(this)) , "You can't sell twice the same offers ");
-
-//       Offer memory _offer = Offer({
-//         seller: payable(msg.sender),
-//         price: _price,
-//         tokenId: _tokenId
-//       });
-
-//       tokenIdToOffer[_tokenId] = _offer;
-
-//       offers.push(_offer);
-
-//       uint256 index = offers.length - 1;
-
-//       tokenIdToOfferId[_tokenId] = index;
-
-//       emit MarketTransaction("Create offer", msg.sender, _tokenId);
-//   }
+    }
 
 }

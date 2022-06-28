@@ -6,15 +6,21 @@ describe("Greeter", function () {
   let addr1 : any, addr2: any, addr3: any,addr4 : any,addr5: any;
   let NFTMarketplace : any,nftmarketplace: any;
   let NFTMarketplaceErc1155 : any, nftmarketplaceerc1155 : any;
+  let USDT : any, usdt : any;
   var conBal : number = 0;
 
   it('Deployment ', async function()  {
     [addr1, addr2, addr3, addr4, addr5] = await ethers.getSigners();
 
+    USDT = await ethers.getContractFactory('USDT');
+
+    usdt = await USDT.deploy();
+    await usdt.deployed();
+
     NFTMarketplaceErc1155 = await ethers.getContractFactory('NFTMarketplaceErc115');
 
-    nftmarketplaceerc1155 = await NFTMarketplaceErc1155.deploy();
-    await nftmarketplaceerc1155.deployed();
+    nftmarketplaceerc1155 = await NFTMarketplaceErc1155.deploy(usdt.address);
+    await nftmarketplaceerc1155.deployed(usdt.address);
         
   });
 
