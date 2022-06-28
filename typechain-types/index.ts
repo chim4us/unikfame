@@ -30,9 +30,11 @@ export type { ERC165 } from "./@openzeppelin/contracts/utils/introspection/ERC16
 export { ERC165__factory } from "./factories/@openzeppelin/contracts/utils/introspection/ERC165__factory";
 export type { IERC165 } from "./@openzeppelin/contracts/utils/introspection/IERC165";
 export { IERC165__factory } from "./factories/@openzeppelin/contracts/utils/introspection/IERC165__factory";
+export type { ERC1155TokenReceiver } from "./contracts/NFTMarketPl.sol/ERC1155TokenReceiver";
+export { ERC1155TokenReceiver__factory } from "./factories/contracts/NFTMarketPl.sol/ERC1155TokenReceiver__factory";
+export type { NFTMarketplaceErc115 } from "./contracts/NFTMarketPl.sol/NFTMarketplaceErc115";
+export { NFTMarketplaceErc115__factory } from "./factories/contracts/NFTMarketPl.sol/NFTMarketplaceErc115__factory";
 export type { NFTMarketplace } from "./contracts/NFTMarketplace";
 export { NFTMarketplace__factory } from "./factories/contracts/NFTMarketplace__factory";
-export type { ERC1155TokenReceiver } from "./contracts/NFTMarketPlaceERC1155.sol/ERC1155TokenReceiver";
-export { ERC1155TokenReceiver__factory } from "./factories/contracts/NFTMarketPlaceERC1155.sol/ERC1155TokenReceiver__factory";
 export type { NFTMarketplaceErc1155 } from "./contracts/NFTMarketPlaceERC1155.sol/NFTMarketplaceErc1155";
 export { NFTMarketplaceErc1155__factory } from "./factories/contracts/NFTMarketPlaceERC1155.sol/NFTMarketplaceErc1155__factory";

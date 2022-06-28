@@ -73,7 +73,7 @@ contract NFTMarketplaceErc1155 is ERC1155URIStorage {
       bool isAuction;
       uint256 timestamp;
       uint256 lasttrade;
-      bool isMarket;
+      bool isMarket; 
       uint256 nonce;
       uint256 rarity;
       uint256 NFTAmt;

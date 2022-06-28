@@ -29,6 +29,58 @@ import type {
 } from "../../common";
 
 export declare namespace NFTMarketplaceErc1155 {
+  export type MarketItemStruct = {
+    tokenId: PromiseOrValue<BigNumberish>;
+    seller: PromiseOrValue<string>;
+    owner: PromiseOrValue<string>;
+    lastBider: PromiseOrValue<string>;
+    royalty: PromiseOrValue<string>;
+    price: PromiseOrValue<BigNumberish>;
+    tokenURI: PromiseOrValue<string>;
+    creator: PromiseOrValue<string>;
+    isAuction: PromiseOrValue<boolean>;
+    timestamp: PromiseOrValue<BigNumberish>;
+    lasttrade: PromiseOrValue<BigNumberish>;
+    isMarket: PromiseOrValue<boolean>;
+    nonce: PromiseOrValue<BigNumberish>;
+    rarity: PromiseOrValue<BigNumberish>;
+    NFTAmt: PromiseOrValue<BigNumberish>;
+  };
+
+  export type MarketItemStructOutput = [
+    BigNumber,
+    string,
+    string,
+    string,
+    string,
+    BigNumber,
+    string,
+    string,
+    boolean,
+    BigNumber,
+    BigNumber,
+    boolean,
+    BigNumber,
+    BigNumber,
+    BigNumber
+  ] & {
+    tokenId: BigNumber;
+    seller: string;
+    owner: string;
+    lastBider: string;
+    royalty: string;
+    price: BigNumber;
+    tokenURI: string;
+    creator: string;
+    isAuction: boolean;
+    timestamp: BigNumber;
+    lasttrade: BigNumber;
+    isMarket: boolean;
+    nonce: BigNumber;
+    rarity: BigNumber;
+    NFTAmt: BigNumber;
+  };
+
   export type UserCardStruct = {
     userId: PromiseOrValue<BigNumberish>;
     userName: PromiseOrValue<string>;
@@ -45,10 +97,21 @@ export interface NFTMarketplaceErc1155Interface extends utils.Interface {
     "addUserCard(string)": FunctionFragment;
     "balanceOf(address,uint256)": FunctionFragment;
     "balanceOfBatch(address[],uint256[])": FunctionFragment;
-    "cancelToken(uint256)": FunctionFragment;
+    "cancelToken(uint256,uint256)": FunctionFragment;
     "createAuctionSale(uint256,uint256)": FunctionFragment;
     "createMarketSale(uint256,uint256)": FunctionFragment;
     "createToken(string,string,uint256,uint256,uint256,uint256,address,uint256)": FunctionFragment;
+    "endAuction(uint256,uint256)": FunctionFragment;
+    "endAuctionBatch(uint256)": FunctionFragment;
+    "fetchAuctionItems()": FunctionFragment;
+    "fetchByTokenIds(uint256[])": FunctionFragment;
+    "fetchItemsByFeatureInfluencers()": FunctionFragment;
+    "fetchMarketItems()": FunctionFragment;
+    "fetchMyAuctionNFTs(address)": FunctionFragment;
+    "fetchMyMarketNFTs(address)": FunctionFragment;
+    "fetchOwnableItems(address)": FunctionFragment;
+    "fetchRarityByTokenIds(uint256[])": FunctionFragment;
+    "fetchUserNFTs(address)": FunctionFragment;
     "getAllUserCards()": FunctionFragment;
     "getListingPrice()": FunctionFragment;
     "getUserCard()": FunctionFragment;
@@ -82,6 +145,17 @@ export interface NFTMarketplaceErc1155Interface extends utils.Interface {
       | "createAuctionSale"
       | "createMarketSale"
       | "createToken"
+      | "endAuction"
+      | "endAuctionBatch"
+      | "fetchAuctionItems"
+      | "fetchByTokenIds"
+      | "fetchItemsByFeatureInfluencers"
+      | "fetchMarketItems"
+      | "fetchMyAuctionNFTs"
+      | "fetchMyMarketNFTs"
+      | "fetchOwnableItems"
+      | "fetchRarityByTokenIds"
+      | "fetchUserNFTs"
       | "getAllUserCards"
       | "getListingPrice"
       | "getUserCard"
@@ -120,7 +194,7 @@ export interface NFTMarketplaceErc1155Interface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "cancelToken",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "createAuctionSale",
@@ -142,6 +216,50 @@ export interface NFTMarketplaceErc1155Interface extends utils.Interface {
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>
     ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "endAuction",
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "endAuctionBatch",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "fetchAuctionItems",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "fetchByTokenIds",
+    values: [PromiseOrValue<BigNumberish>[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "fetchItemsByFeatureInfluencers",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "fetchMarketItems",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "fetchMyAuctionNFTs",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "fetchMyMarketNFTs",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "fetchOwnableItems",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "fetchRarityByTokenIds",
+    values: [PromiseOrValue<BigNumberish>[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "fetchUserNFTs",
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "getAllUserCards",
@@ -283,6 +401,47 @@ export interface NFTMarketplaceErc1155Interface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "createToken",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "endAuction", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "endAuctionBatch",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "fetchAuctionItems",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "fetchByTokenIds",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "fetchItemsByFeatureInfluencers",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "fetchMarketItems",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "fetchMyAuctionNFTs",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "fetchMyMarketNFTs",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "fetchOwnableItems",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "fetchRarityByTokenIds",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "fetchUserNFTs",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -551,6 +710,7 @@ export interface NFTMarketplaceErc1155 extends BaseContract {
 
     cancelToken(
       tokenId: PromiseOrValue<BigNumberish>,
+      NftAmt: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -577,6 +737,59 @@ export interface NFTMarketplaceErc1155 extends BaseContract {
       _time: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
+
+    endAuction(
+      tokenId: PromiseOrValue<BigNumberish>,
+      NftAmt: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    endAuctionBatch(
+      tokenId: PromiseOrValue<BigNumberish>,
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    fetchAuctionItems(
+      overrides?: CallOverrides
+    ): Promise<[NFTMarketplaceErc1155.MarketItemStructOutput[]]>;
+
+    fetchByTokenIds(
+      tokenIds: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<[string[]]>;
+
+    fetchItemsByFeatureInfluencers(
+      overrides?: CallOverrides
+    ): Promise<[NFTMarketplaceErc1155.MarketItemStructOutput[]]>;
+
+    fetchMarketItems(
+      overrides?: CallOverrides
+    ): Promise<[NFTMarketplaceErc1155.MarketItemStructOutput[]]>;
+
+    fetchMyAuctionNFTs(
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[NFTMarketplaceErc1155.MarketItemStructOutput[]]>;
+
+    fetchMyMarketNFTs(
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[NFTMarketplaceErc1155.MarketItemStructOutput[]]>;
+
+    fetchOwnableItems(
+      _to: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    fetchRarityByTokenIds(
+      tokenIds: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<[BigNumber[]]>;
+
+    fetchUserNFTs(
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[NFTMarketplaceErc1155.MarketItemStructOutput[]]>;
 
     getAllUserCards(overrides?: CallOverrides): Promise<[string[]]>;
 
@@ -716,6 +929,7 @@ export interface NFTMarketplaceErc1155 extends BaseContract {
 
   cancelToken(
     tokenId: PromiseOrValue<BigNumberish>,
+    NftAmt: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -742,6 +956,59 @@ export interface NFTMarketplaceErc1155 extends BaseContract {
     _time: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
+
+  endAuction(
+    tokenId: PromiseOrValue<BigNumberish>,
+    NftAmt: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  endAuctionBatch(
+    tokenId: PromiseOrValue<BigNumberish>,
+    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  fetchAuctionItems(
+    overrides?: CallOverrides
+  ): Promise<NFTMarketplaceErc1155.MarketItemStructOutput[]>;
+
+  fetchByTokenIds(
+    tokenIds: PromiseOrValue<BigNumberish>[],
+    overrides?: CallOverrides
+  ): Promise<string[]>;
+
+  fetchItemsByFeatureInfluencers(
+    overrides?: CallOverrides
+  ): Promise<NFTMarketplaceErc1155.MarketItemStructOutput[]>;
+
+  fetchMarketItems(
+    overrides?: CallOverrides
+  ): Promise<NFTMarketplaceErc1155.MarketItemStructOutput[]>;
+
+  fetchMyAuctionNFTs(
+    user: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<NFTMarketplaceErc1155.MarketItemStructOutput[]>;
+
+  fetchMyMarketNFTs(
+    user: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<NFTMarketplaceErc1155.MarketItemStructOutput[]>;
+
+  fetchOwnableItems(
+    _to: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  fetchRarityByTokenIds(
+    tokenIds: PromiseOrValue<BigNumberish>[],
+    overrides?: CallOverrides
+  ): Promise<BigNumber[]>;
+
+  fetchUserNFTs(
+    user: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<NFTMarketplaceErc1155.MarketItemStructOutput[]>;
 
   getAllUserCards(overrides?: CallOverrides): Promise<string[]>;
 
@@ -881,6 +1148,7 @@ export interface NFTMarketplaceErc1155 extends BaseContract {
 
     cancelToken(
       tokenId: PromiseOrValue<BigNumberish>,
+      NftAmt: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -907,6 +1175,59 @@ export interface NFTMarketplaceErc1155 extends BaseContract {
       _time: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    endAuction(
+      tokenId: PromiseOrValue<BigNumberish>,
+      NftAmt: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    endAuctionBatch(
+      tokenId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    fetchAuctionItems(
+      overrides?: CallOverrides
+    ): Promise<NFTMarketplaceErc1155.MarketItemStructOutput[]>;
+
+    fetchByTokenIds(
+      tokenIds: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<string[]>;
+
+    fetchItemsByFeatureInfluencers(
+      overrides?: CallOverrides
+    ): Promise<NFTMarketplaceErc1155.MarketItemStructOutput[]>;
+
+    fetchMarketItems(
+      overrides?: CallOverrides
+    ): Promise<NFTMarketplaceErc1155.MarketItemStructOutput[]>;
+
+    fetchMyAuctionNFTs(
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<NFTMarketplaceErc1155.MarketItemStructOutput[]>;
+
+    fetchMyMarketNFTs(
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<NFTMarketplaceErc1155.MarketItemStructOutput[]>;
+
+    fetchOwnableItems(
+      _to: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    fetchRarityByTokenIds(
+      tokenIds: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber[]>;
+
+    fetchUserNFTs(
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<NFTMarketplaceErc1155.MarketItemStructOutput[]>;
 
     getAllUserCards(overrides?: CallOverrides): Promise<string[]>;
 
@@ -1171,6 +1492,7 @@ export interface NFTMarketplaceErc1155 extends BaseContract {
 
     cancelToken(
       tokenId: PromiseOrValue<BigNumberish>,
+      NftAmt: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -1196,6 +1518,55 @@ export interface NFTMarketplaceErc1155 extends BaseContract {
       royalty: PromiseOrValue<string>,
       _time: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    endAuction(
+      tokenId: PromiseOrValue<BigNumberish>,
+      NftAmt: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    endAuctionBatch(
+      tokenId: PromiseOrValue<BigNumberish>,
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    fetchAuctionItems(overrides?: CallOverrides): Promise<BigNumber>;
+
+    fetchByTokenIds(
+      tokenIds: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    fetchItemsByFeatureInfluencers(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    fetchMarketItems(overrides?: CallOverrides): Promise<BigNumber>;
+
+    fetchMyAuctionNFTs(
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    fetchMyMarketNFTs(
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    fetchOwnableItems(
+      _to: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    fetchRarityByTokenIds(
+      tokenIds: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    fetchUserNFTs(
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getAllUserCards(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1335,6 +1706,7 @@ export interface NFTMarketplaceErc1155 extends BaseContract {
 
     cancelToken(
       tokenId: PromiseOrValue<BigNumberish>,
+      NftAmt: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1360,6 +1732,55 @@ export interface NFTMarketplaceErc1155 extends BaseContract {
       royalty: PromiseOrValue<string>,
       _time: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    endAuction(
+      tokenId: PromiseOrValue<BigNumberish>,
+      NftAmt: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    endAuctionBatch(
+      tokenId: PromiseOrValue<BigNumberish>,
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    fetchAuctionItems(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    fetchByTokenIds(
+      tokenIds: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    fetchItemsByFeatureInfluencers(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    fetchMarketItems(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    fetchMyAuctionNFTs(
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    fetchMyMarketNFTs(
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    fetchOwnableItems(
+      _to: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    fetchRarityByTokenIds(
+      tokenIds: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    fetchUserNFTs(
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getAllUserCards(overrides?: CallOverrides): Promise<PopulatedTransaction>;
